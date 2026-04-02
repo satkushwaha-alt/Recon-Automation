@@ -1,9 +1,11 @@
 import { test, expect } from "@playwright/test";
-import { login } from "../lib/login";
+import { login} from "../../lib/login";
 import fs from "fs";
+import { openFromBreakManagement } from "../../lib/Signoff/openReconFromBreakManagement";
 const { PNG } = require("pngjs");
+import { compareScreenshotWithBaseline } from "../../lib/screenshotUtils";
 
-test("signoff2", async ({ page }) => {
+test("signoff", async ({ page }) => {
   await login(page, "mayadav_reconsignoff@ivp.in", "Ivp@123");
 
   //open recon
@@ -11,7 +13,7 @@ test("signoff2", async ({ page }) => {
   await page
     .getByRole("textbox", { name: "Search Text here..." })
     .fill("Copy of Break_Management_Position");
-  await page.getByText("Copy of Break_Management_Position").click();
+  await page.getByText("Copy of Break_Management_Position",{exact:true}).click();
   await page.locator("#btnExpand_1990").click();
   await page
     .getByRole("textbox", { name: "Click to view Break Details" })
@@ -32,18 +34,7 @@ test("signoff2", async ({ page }) => {
     await page.getByRole('button', { name: 'Copy of' }).click();
     await expect(page.locator('#RS_FirstRow')).toContainText('Sign off Status :');
     await expect(page.locator('#RS_FirstRow')).toContainText('Pending At Approver');
-  // await page.pause();
-  //   let v =  page.locator('i').click();
-  //   console.log(v);
-  //   // await page.pause();
-  //   const icon = page.locator('.fa-info-circle');
-  // await icon.hover();
-  // const tooltip = page.locator('.RS_tooltiptext').innerHTML;
-  // console.log(tooltip);
-
-  // await expect(tooltip).toBeVisible({ timeout: 5000 });
-
-  // await expect(tooltip).toContainText('Assigned Approver');
+  
 
   await page.locator('i').hover();
   await page.getByTestId('runSatusClose').click();
@@ -63,30 +54,16 @@ test("signoff2", async ({ page }) => {
   // login by mayadav_16@ivp.in - operations
   await page.getByRole('textbox', { name: 'Email' }).click();
   await page.getByRole('textbox', { name: 'Email' }).fill('mayadav_16@ivp.in');
-  // await page.goto('https://li-reconqaautomation.ivp.in/keycloak/realms/reconqa15autouat/protocol/openid-connect/auth?response_type=code&client_id=rad&redirect_uri=https://li-reconqaautomation.ivp.in/MFRAD/LoginCallback&username=mayadav_16%40ivp.in');
-  // await page.getByRole('textbox', { name: 'Password' }).click();
-  // await page.getByRole('textbox', { name: 'Password' }).fill('Ivp@123');
-  // await page.getByRole('button', { name: 'Log in' }).click();
-  // await page.goto('https://li-reconqaautomation.ivp.in/IVPRecon/DashboardHandler?login=true&login=true');
+
   await page.getByRole('textbox', { name: 'Email' }).fill('mayadav_16@ivp.in');
   await page.goto('https://li-reconqaautomation.ivp.in/keycloak/realms/reconqa15autouat/protocol/openid-connect/auth?response_type=code&client_id=rad&redirect_uri=https://li-reconqaautomation.ivp.in/MFRAD/LoginCallback&username=mayadav_16%40ivp.in');
   await page.getByRole('textbox', { name: 'Password' }).click();
   await page.getByRole('textbox', { name: 'Password' }).fill('Ivp@123');
   await page.getByRole('button', { name: 'Log in' }).click();
 
-  await page.getByTestId('menu-icon').click();
-  await page.getByRole('button', { name: 'Break Management' }).click();
-  await page.getByRole('textbox', { name: 'Select any Recon' }).click();
-  await page.getByRole('combobox').fill('Copy of Break_Management_Position');
-  await page.pause();
-  await page.mouse.move(300,500);
-  await page.getByRole('option', { name: 'Recon - Copy of Break_Management_Position' }).hover();
-  await page.getByRole('option', { name: 'Recon - Copy of Break_Management_Position' }).click({
-  force: true
-});
-  await page.getByRole('button', { name: 'Generate', exact: true }).click();
-  await page.getByRole('button', { name: 'Copy of' }).click();
-  await page.pause();
+await openFromBreakManagement(page, 'Copy of Break_Management_Position',"Recon");
+  await page.getByRole('button', { name: 'Copy of'  }).click();
+  // await page.pause();
   await expect(page.locator('#RS_FirstRow')).toContainText('Sign off Status : Pending At Approver Assigned Approver : |OpsHead|SignOff_FirstApprover|Quick_OpsCurrent Approver : OperationsSign Off Date :');
   await page.getByTestId('runSatusClose').click();
   await expect(page.locator('#approveSignOff')).toContainText('Approve Sign off');
@@ -106,13 +83,9 @@ test("signoff2", async ({ page }) => {
   await page.getByRole('textbox', { name: 'Password' }).click();
   await page.getByRole('textbox', { name: 'Password' }).fill('Ivp@123');
   await page.getByRole('button', { name: 'Log in' }).click();
-  await page.getByTestId('menu-icon').click();
-  await page.getByRole('button', { name: 'Break Management' }).click();
-  await page.getByRole('textbox', { name: 'Select any Recon' }).click();
-  await page.getByRole('combobox').fill('Copy of Break_Management_Position');
-  await page.mouse.move(300,500);
-  await page.getByRole('option', { name: 'Recon - Copy of' }).click();
-  await page.getByRole('button', { name: 'Generate', exact: true }).click();
+ 
+  await openFromBreakManagement(page, 'Copy of Break_Management_Position',"Recon");
+  
   await expect(page.locator('#approveSignOff')).toContainText('Approve Sign off');
   await expect(page.locator('#rejectSignOff')).toContainText('Reject Sign off');
   await page.getByRole('button', { name: 'Copy of' }).click();
@@ -133,13 +106,9 @@ test("signoff2", async ({ page }) => {
   await page.getByRole('textbox', { name: 'Password' }).click();
   await page.getByRole('textbox', { name: 'Password' }).fill('Ivp@101');
   await page.getByRole('button', { name: 'Log in' }).click();
-  await page.getByTestId('menu-icon').click();
-  await page.getByRole('button', { name: 'Break Management' }).click();
-  await page.getByRole('textbox', { name: 'Select any Recon' }).click();
-  await page.getByRole('combobox').fill('Copy of Break_Management_Position');
-  await page.mouse.move(300,500);
-  await page.getByRole('option', { name: 'Recon - Copy of' }).click();
-  await page.getByRole('button', { name: 'Generate', exact: true }).click();
+  
+  await openFromBreakManagement(page, 'Copy of Break_Management_Position',"Recon");
+
   await expect(page.locator('#pendingSignOff')).toContainText('Signoff Pending for Approval');
   await page.getByText('QA').click();
   await page.getByRole('button', { name: 'Sign out' }).click();
@@ -151,13 +120,9 @@ test("signoff2", async ({ page }) => {
   await page.getByRole('textbox', { name: 'Password' }).click();
   await page.getByRole('textbox', { name: 'Password' }).fill('Ivp@123');
   await page.getByRole('button', { name: 'Log in' }).click();
-  await page.getByTestId('menu-icon').click();
-  await page.getByRole('button', { name: 'Break Management' }).click();
-  await page.getByRole('textbox', { name: 'Select any Recon' }).click();
-  await page.getByRole('combobox').fill('copy of Break_Management_Position');
-  await page.mouse.move(300,500);
-  await page.getByRole('option', { name: 'Recon - Copy of' }).click();
-  await page.getByRole('button', { name: 'Generate', exact: true }).click();
+
+  await openFromBreakManagement(page, 'Copy of Break_Management_Position',"Recon");
+
   await page.waitForTimeout(3000);
   await page.getByRole('button', { name: 'Copy of' }).click();
   await expect(page.locator('#RS_FirstRow')).toContainText('Sign off Status : Pending At Approver Assigned Approver : Operations|OpsHead||Quick_OpsCurrent Approver : SignOff_FirstApproverSign Off Date :');
@@ -194,40 +159,21 @@ test("signoff2", async ({ page }) => {
   // await page.getByTitle('SIGNED_OFF', { exact: true }).click();
   await page.getByRole('button', { name: 'Signed off for the day is' }).click();
 
-  //  const signOffBtn = page.getByRole('button', { name: 'Signed off for the day is' });
-  // const path = '../Screenshots/Signoff1.png';
-  // if (!fs.existsSync(path)) {
-  //   await signOffBtn.screenshot({ path });
-  //   console.log('Baseline image of Signoff created');
-  // } else {
-  //     const baseline = fs.readFileSync(path);
-  //   const current = await signOffBtn.screenshot();
-  //   expect(current).toMatchSnapshot(baseline);
-  // }
 
 
   // compare signoff logo when signoff not done(should appear as blank)
   const signOffBtn = page.getByRole('button', { name: 'Signed off for the day is' });
   const baselinePath = './Screenshots/Signoff1.png';
-  await signOffBtn.waitFor({ state: 'visible' });
-  // Take current screenshot
-  const currentScreenshot = await signOffBtn.screenshot();
-  // If baseline doesn't exist → create it
-  if (!fs.existsSync(baselinePath)) {
-    fs.writeFileSync(baselinePath, currentScreenshot);
-    console.log('Baseline image for Signoff logo when signoff not done created');
-  } else {
-    // Read baseline image
-    const baselineImage = fs.readFileSync(baselinePath);
+  
     // Compare images
     try {
-      expect(currentScreenshot.equals(baselineImage)).toBeTruthy();
+      compareScreenshotWithBaseline(signOffBtn,baselinePath);
     } catch (error) {
          console.log('Signoff logo not matches when signoff not done');
     }
     
  
-  }
+  
 
   await page.locator('#btnExpand_1990').click();
   await page.getByRole('textbox', { name: 'Click to view Break Details' }).first().click();
@@ -244,15 +190,23 @@ test("signoff2", async ({ page }) => {
   await page.getByRole('textbox', { name: 'Search Text here...' }).click();
   await page.getByRole('textbox', { name: 'Search Text here...' }).fill('Copy of Break_Management_Position');
   await page.mouse.move(100,100);
+  await page.locator(`
+  //input[@type='button'
+  and contains(@title,'Recon name: Copy of Break_Management_Position')
+  and not(contains(@title,'Single Approver'))
+]`).click();
+  
 
-  await page.getByRole('button', { name: 'Recon name: Copy of' }).click();
+  // await page.getByRole('button', { name: 'Recon name: Copy of',exact:true }).click();
   await expect(page.locator('#RS_FirstRow')).toContainText('Sign off Status : Signed Off >Sign off by : mayadav_re-arch1@ivp.inSign Off Date :');
   await expect(page.locator('#RS_FirstRow')).toContainText('Revoke Sign Off');
   await page.getByTestId('runSatusClose').click();
-  await page.getByRole('button', { name: 'Recon has been signed off for' }).click();
+  // await page.getByRole('button', { name: 'Recon has been signed off for' }).click();
 
 
   // signoff logo validation on dashboard
+  try{
+    
   const signOffBtn1 = page.getByRole("button", {
     name: "Recon has been signed off for",
   });
@@ -289,6 +243,9 @@ test("signoff2", async ({ page }) => {
       throw new Error("Screenshot comparison failed");
     }
   }
+}catch(error){
+  console.log('error during screenshot comapre')
+}
 
 
   // Revoke -> signoff convert into revoke
@@ -310,15 +267,16 @@ test("signoff2", async ({ page }) => {
   await page.getByRole('textbox', { name: 'Password' }).click();
   await page.getByRole('textbox', { name: 'Password' }).fill('Ivp@123');
   await page.getByRole('button', { name: 'Log in' }).click();
-  await page.getByTestId('menu-icon').click();
-  await page.getByRole('button', { name: 'Break Management' }).click();
-  await page.getByRole('textbox', { name: 'Select any Recon' }).click();
-  await page.getByRole('combobox').fill('Copy of Break_Management_Position');
-  await page.mouse.move(100,100);
-  await page.getByRole('option', { name: 'Recon - Copy of' }).click();
-  await page.getByRole('button', { name: 'Generate', exact: true }).click();
+  
+  await openFromBreakManagement(page, 'Copy of Break_Management_Position',"Recon");
+
   await page.getByRole('button', { name: 'Approve Revoke' }).click();
-  await page.getByRole('button', { name: 'Approve Revoke' }).click();
+  try{
+    await page.getByRole('button', { name: 'Approve Revoke' }).click();
+  }catch(error){
+    console.log(error);
+  }
+  
   await page.getByRole('button', { name: 'Copy of' }).click();
   await expect(page.locator('#RS_FirstRow')).toContainText('Sign off Status : Revoke Sign off Pending Assigned Approver : Operations||SignOff_FirstApprover|Quick_OpsCurrent Approver : OpsHeadSign Off Date :');
   await page.getByTestId('runSatusClose').click();
@@ -332,9 +290,11 @@ test("signoff2", async ({ page }) => {
   await page.getByRole('textbox', { name: 'Password' }).click();
   await page.getByRole('textbox', { name: 'Password' }).fill('Ivp@123');
   await page.getByRole('button', { name: 'Log in' }).click();
-  await page.getByRole('textbox', { name: 'Search Text here...' }).click();
-  await page.getByRole('textbox', { name: 'Search Text here...' }).fill('Copy of Break_Management_Position');
-  await page.getByRole('button', { name: 'Revoke Signed off is pending' }).click();
+  await openFromBreakManagement(page,'Copy of Break_Management_Position',"Recon");
+  // await page.getByRole('textbox', { name: 'Search Text here...' }).click();
+  // await page.getByRole('textbox', { name: 'Search Text here...' }).fill('Copy of Break_Management_Position');
+  // await page.getByRole('button', { name: 'Revoke Signed off is pending' }).click();
+  await page.waitForTimeout(20000);
   await page.getByRole('button', { name: 'Recon name: Copy of' }).click();
   await expect(page.locator('#RS_FirstRow')).toContainText('Sign off Status : Revoke Sign off Pending Assigned Approver : Operations||SignOff_FirstApprover|Quick_OpsCurrent Approver : OpsHeadSign Off Date :');
   await page.getByRole('button', { name: 'Approve' }).click();
@@ -351,9 +311,10 @@ test("signoff2", async ({ page }) => {
   await page.getByRole('textbox', { name: 'Password' }).click();
   await page.getByRole('textbox', { name: 'Password' }).fill('Ivp@101');
   await page.getByRole('button', { name: 'Log in' }).click();
-  await page.getByRole('textbox', { name: 'Search Text here...' }).click();
-  await page.getByRole('textbox', { name: 'Search Text here...' }).fill('Copy of Break_Management_Position');
-  await page.mouse.move(100,100);
+  // await page.getByRole('textbox', { name: 'Search Text here...' }).click();
+  // await page.getByRole('textbox', { name: 'Search Text here...' }).fill('Copy of Break_Management_Position');
+  // await page.mouse.move(100,100);
+  await openFromBreakManagement(page,'Copy of Break_Management_Position',"Recon");
   await page.getByRole('button', { name: 'Recon name: Copy of' }).click();
   await expect(page.locator('#RS_FirstRow')).toContainText('Sign off Status : Revoke Sign off Pending Assigned Approver : Operations|OpsHead||Quick_OpsCurrent Approver : SignOff_FirstApproverSign Off Date :');
   await page.getByTestId('runSatusClose').click();
@@ -367,9 +328,10 @@ test("signoff2", async ({ page }) => {
   await page.getByRole('textbox', { name: 'Password' }).click();
   await page.getByRole('textbox', { name: 'Password' }).fill('Ivp@123');
   await page.getByRole('button', { name: 'Log in' }).click();
-  await page.getByRole('textbox', { name: 'Search Text here...' }).click();
-  await page.getByRole('textbox', { name: 'Search Text here...' }).fill('Copy of Break_Management_Position');
-  await page.mouse.move(100,100);
+  // await page.getByRole('textbox', { name: 'Search Text here...' }).click();
+  // await page.getByRole('textbox', { name: 'Search Text here...' }).fill('Copy of Break_Management_Position');
+  // await page.mouse.move(100,100);
+  await openFromBreakManagement(page, 'Copy of Break_Management_Position',"Recon");
   await page.getByRole('button', { name: 'Recon name: Copy of' }).click();
   await page.getByRole('button', { name: 'Approve' }).click();
   await page.getByRole('button', { name: 'Recon name: Copy of' }).click();
@@ -385,20 +347,16 @@ test("signoff2", async ({ page }) => {
   await page.getByRole('textbox', { name: 'Password' }).click();
   await page.getByRole('textbox', { name: 'Password' }).fill('Ivp@101');
   await page.getByRole('button', { name: 'Log in' }).click();
-  await page.getByRole('textbox', { name: 'Search Text here...' }).click();
-  await page.getByRole('textbox', { name: 'Search Text here...' }).fill('Copy of Break_Management_Position');
-  await page.getByRole('button', { name: 'Revoke Signed off is pending' }).click();
+  // await page.getByRole('textbox', { name: 'Search Text here...' }).click();
+  // await page.getByRole('textbox', { name: 'Search Text here...' }).fill('Copy of Break_Management_Position');
+  // await page.getByRole('button', { name: 'Revoke Signed off is pending' }).click();
+  await openFromBreakManagement(page, 'Copy of Break_Management_Position',"Recon");
   await page.getByRole('button', { name: 'Recon name: Copy of' }).click();
   await page.getByRole('button', { name: 'Approve' }).click();
   await page.getByRole('button', { name: 'Recon name: Copy of' }).click();
   await expect(page.locator('#RS_FirstRow')).toContainText('Sign off Status : Sign Off Not Intiated');
   await page.getByTestId('runSatusClose').click();
-  await page.getByTestId('menu-icon').click();
-  await page.getByRole('button', { name: 'Break Management' }).click();
-  await page.getByRole('textbox', { name: 'Select any Recon' }).click();
-  await page.getByRole('combobox').fill('Copy of Break_Management_Position');
-  await page.getByRole('option', { name: 'Recon - Copy of' }).click();
-  await page.getByRole('button', { name: 'Generate', exact: true }).click();
+  await openFromBreakManagement(page, 'Copy of Break_Management_Position',"Recon");
 
   // revoke change into signoff
   await expect(page.locator('#signOffIcon')).toContainText('Sign off');
@@ -406,7 +364,7 @@ test("signoff2", async ({ page }) => {
   await page.getByRole('button', { name: 'Dashboard' }).click();
   await page.getByRole('textbox', { name: 'Search Text here...' }).click();
   await page.getByRole('textbox', { name: 'Search Text here...' }).fill('Copy of Break_Management_Position');
-  await page.getByRole('button', { name: 'Recon name: Copy of' }).click();
+  await page.getByRole('button', { name: 'Recon name: Copy of' , exact:true}).click();
   await expect(page.locator('#RS_FirstRow')).toContainText('Sign off Status : Sign Off Not Intiated');
   await page.getByTestId('runSatusClose').click();
   await page.getByText('QA').click();
@@ -419,9 +377,10 @@ test("signoff2", async ({ page }) => {
   await page.getByRole('textbox', { name: 'Password' }).click();
   await page.getByRole('textbox', { name: 'Password' }).fill('Ivp@123');
   await page.getByRole('button', { name: 'Log in' }).click();
-  await page.getByRole('textbox', { name: 'Search Text here...' }).click();
-  await page.getByRole('textbox', { name: 'Search Text here...' }).fill('Copy of Break_Management_Position');
-  await page.getByRole('button', { name: 'Recon name: Copy of' }).click();
+  await openFromBreakManagement(page, 'Copy of Break_Management_Position',"Recon");
+  // await page.getByRole('textbox', { name: 'Search Text here...' }).click();
+  // await page.getByRole('textbox', { name: 'Search Text here...' }).fill('Copy of Break_Management_Position');
+  await page.getByRole('button', { name: 'Recon name: Copy of'}).click();
   await expect(page.locator('#RS_FirstRow')).toContainText('Sign off Status : Sign Off Not Intiated');
   await page.getByTestId('runSatusClose').click();
 

@@ -1,48 +1,67 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig } from '@playwright/test';
+function getFolderName() {
+  const testArg = process.argv.find(arg => arg.includes('tests/'));
+  if (!testArg) return 'default-run';
+  const normalized = testArg.replace(/\\/g, '/');
+  const parts = normalized.split('/');
+  const index = parts.indexOf('tests');
+  if (index !== -1 && parts[index + 1]) {
+    return parts[index + 1];
+  }
+  return 'default-run';
+}
+const folderName = getFolderName();
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
-
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
 export default defineConfig({
   testDir: './tests',
-  timeout: 1500000,
+  timeout: 800000,
 
-  fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: [['html', { open: 'always' }]], // Generates the HTML report
 
-  /* Expect timeout for assertions */
+  workers: 1,
+
+  reporter: [
+    ['html', {
+      // This dynamically names the folder based on the current date and time
+      outputFolder: `playwright-report/${folderName}/run-${new Date().toISOString().replace(/[:.]/g, '-')}`, 
+      open: 'always' }],
+    ['list'], // shows logs in terminal
+  ],
+
+   /* Expect timeout for assertions */
   expect: {
-    timeout: 10000, // 10 seconds
+    timeout: 30000, // 30 seconds
   },
 
   use: {
     headless: false,
     viewport: null,
+    
+
     launchOptions: {
       args: ['--start-maximized'],
     },
-      /* Action timeout for clicks, fill, hover, etc */
+
+     /* Action timeout for clicks, fill, hover, etc */
     actionTimeout: 60000, // 60 seconds
-    
-    /* Capture screenshots for every test failure */
-    screenshot: 'only-on-failure', 
 
-    /* Record video for every test (or 'retain-on-failure') */
-    video: 'retain-on-failure', 
+    screenshot: 'only-on-failure',
 
-    /* Record traces for every test (standard for debugging) */
-    trace: 'on',
+    video: {
+      mode: 'on',
+      size: { width: 1920, height: 1080 }
+    },
+
+    trace: 'on', //  Always capture trace (not just retry)
+
+    //  Enable HAR (network logs)
+    contextOptions: {
+      recordHar: {
+        path: 'test-results/network.har',
+        content: 'embed',
+      },
+    },
   },
 
   projects: [
@@ -50,10 +69,6 @@ export default defineConfig({
       name: 'chromium',
       use: {
         browserName: 'chromium',
-        viewport: null,
-        launchOptions: {
-        args: ['--start-maximized'],
-        },
       },
     },
   ],
