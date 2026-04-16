@@ -50,7 +50,7 @@ export async function loginQA(page: Page, email: string, password: string) {
   }
 }
 
-//signout and login
+//signout and login - Automation
 export async function signoutLogin(page:Page,email:string,password:string){
   try{
     await page.getByText('QA').click();

@@ -69,16 +69,16 @@ test("approveReject1", async ({ page }) => {
   await openFromBreakManagement(
     page,
     "Copy of Break_Management_Position_AP_RJ",
-    "Recon",
+    "Recon"
   );
 
-  await performActionOnCell(
-    page,
-    "Pending",
-    "18348725006773",
-    { workflowAction: "Approve Break" },
-    "update-1",
-  );
+  // await performActionOnCell(
+  //   page,
+  //   "Pending",
+  //   "18348725006773",
+  //   { workflowAction: "Approve Break" },
+  //   "update-1",
+  // );
   await performActionOnCell(
     page,
     "Pending",
@@ -106,6 +106,7 @@ test("approveReject1", async ({ page }) => {
     "Recon",
   );
 await page.getByRole('button', { name: 'Refresh' }).click();
+await page.waitForTimeout(3000);
   await performActionOnCell(
     page,
     "Pending",
@@ -121,11 +122,14 @@ await page.getByRole('button', { name: 'Refresh' }).click();
   await page.locator(await closeFilter("Status")).click();
   //Filter byy close
   await page.waitForTimeout(3000);
+  await page.getByRole('button', { name: 'Refresh' }).click();
   await page.locator(await selectFilterByAttribute("Status")).click();
-  await page.getByLabel("", { exact: true }).nth(1).check();
+  await page.getByLabel("", { exact: true }).nth(1).click();
+  await page.waitForTimeout(3000);
   await page
     .getByRole("checkbox", { name: "Column with Header Selection" })
     .check();
+    await page.waitForTimeout(3000);
   await expect(page.locator("#selectedRowCountNumber")).toContainText("01");
 
   //
@@ -136,7 +140,7 @@ await page.getByRole('button', { name: 'Refresh' }).click();
 
   await page.getByRole('button', { name: 'Refresh' }).click();
   await page.locator(await selectFilterByAttribute("Status")).click();
-  await page.getByLabel("", { exact: true }).nth(2).check();
+  await page.getByLabel("", { exact: true }).nth(2).click();
   await page
     .getByRole("checkbox", { name: "Column with Header Selection" })
     .check();

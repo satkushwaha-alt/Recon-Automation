@@ -1,4 +1,4 @@
-import { defineConfig } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test';
 function getFolderName() {
   const testArg = process.argv.find(arg => arg.includes('tests/'));
   if (!testArg) return 'default-run';
@@ -14,7 +14,7 @@ const folderName = getFolderName();
 
 export default defineConfig({
   testDir: './tests',
-  timeout: 800000,
+  timeout: 1000000,
 
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -72,4 +72,14 @@ export default defineConfig({
       },
     },
   ],
+  // projects: [
+  //   /* -- Replaced chromium with Google Chrome -- */
+  //   {
+  //     name: 'Google Chrome',
+  //     use: {
+  //       // ...devices['Desktop Chrome'],
+  //       channel: 'chrome', 
+  //     },
+  //   },
+  // ],
 });

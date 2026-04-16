@@ -46,16 +46,18 @@ export async function performActionOnCell<T extends Status>(
 ) {
   try {
     // Open Status filter
+    
+    await page.getByRole('button', { name: 'Clear Filters and Grouping' }).click();
     await page.locator(selectFilterByAttribute("Status")).click();
 
     // Filter by Status
     if (status === "Open") {
-      await page.getByLabel("", { exact: true }).nth(1).check();
+      await page.getByLabel("", { exact: true }).nth(1).click();
     } else if (status === "Pending") {
       try{
-      await page.getByLabel('', { exact: true }).nth(2).check();
+      await page.getByLabel('', { exact: true }).nth(2).click();
       }catch(error){
-        await page.getByLabel("", { exact: true }).nth(1).check();
+        await page.getByLabel("", { exact: true }).nth(1).click();
       }
      
     }

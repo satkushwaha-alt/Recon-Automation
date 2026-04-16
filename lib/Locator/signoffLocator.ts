@@ -8,3 +8,5 @@ export const selectFilterByAttribute = (Attribute: string) =>
   `//*[@id="floatingFilter_${Attribute}_adaptableId"]//span[contains(text(),"Select")]`;
 
 export const signoffStatusLogo =() => `//input[@type='button'    and contains(@class,'SignOffPendingApprove')    and contains(@title,'pending for approval')]`;
+//*[@id="floatingFilter_Status_adaptableId"]//span[contains(text(),"Select")]
+// https://li-reconqaautomation.ivp.in/RSetup/api/SaveChangesInCache

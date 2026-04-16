@@ -26,7 +26,7 @@ export async function openFromBreakManagement(
 
   //  Build exact match dynamically
   const fullText = `${type} - ${name}`;
-  console.log(fullText);
+  // console.log(fullText);
 
   //  Click exact match (handles duplicates safely)
   await page.getByRole('option', {

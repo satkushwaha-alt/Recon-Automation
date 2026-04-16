@@ -7,7 +7,7 @@ import { signoutLogin } from "../../lib/login";
 import { performActionOnCell } from "../../lib/Signoff/performActionOnCell";
 import { closeFilter } from "../../lib/Locator/signoffLocator";
 
-test("approveReject1", async ({ page }) => {
+test("approveReject2", async ({ page }) => {
   await login(page, "mayadav_16@ivp.in", "Ivp@123");
   await openFromBreakManagement(
     page,
@@ -102,7 +102,7 @@ test("approveReject1", async ({ page }) => {
 await page.waitForTimeout(3000);
 // Filter By close
   await page.locator(await selectFilterByAttribute("Status")).click();
-  await page.getByLabel('', { exact: true }).nth(1).check();
+  await page.getByLabel('', { exact: true }).nth(1).click();
 
   await page.getByText('External Exception').click();
   

@@ -29,8 +29,7 @@ test("nvSetupCash", async ({ page }) => {
     .getByRole("button", { name: "Configurations", exact: true })
     .click();
   await page.getByRole("button", { name: "Normalized View Setup" }).click();
-  
-  
+
   //   await page.getByRole('button', { name: 'toast' }).click();
   await createNV(
     page,
@@ -107,18 +106,15 @@ test("nvSetupCash", async ({ page }) => {
   } catch (error) {
     console.error(" Dropdown validation failed");
   }
- await page.getByRole("button", { name: "DropdownArrowBtn" }).click();
- await page.getByRole("button", { name: "Cancel" }).click();
-
+  await page.getByRole("button", { name: "DropdownArrowBtn" }).click();
+  await page.getByRole("button", { name: "Cancel" }).click();
 
   //open Cash_NV_Setup_Automation
   await page.getByRole("textbox", { name: "Search here" }).click();
   await page
     .getByRole("textbox", { name: "Search here" })
     .fill("Cash_NV_Setup_Automation");
-  await page
-    .getByRole("button", { name: "Cash_NV_Setup_Automation" })
-    .click();
+  await page.getByRole("button", { name: "Cash_NV_Setup_Automation" }).click();
   //open Configure Attribute
   await expect(page.getByRole("group")).toContainText("Configure Attribute");
   await page.getByRole("button", { name: "Configure Attribute" }).click();
@@ -154,25 +150,33 @@ test("nvSetupCash", async ({ page }) => {
 
   await page.getByRole("button", { name: "Change View" }).click();
   await page.waitForTimeout(3000);
-  
 
   await page.getByText("attribute-").click();
   await page.getByText("Test Date").click();
-  await page.getByRole('button', { name: 'Save View' }).click();
-  try{
-     await expect(page.getByLabel("Error")).toContainText(
-    "ErrorCan not save without any selected cloumns",
-  );
-  }catch(error){
-    console.error(`Error During validating error message on save view without selecting columns`);
-    }
+  await page.getByRole("button", { name: "Save View" }).click();
+  try {
+    await expect(page.getByLabel("Error")).toContainText(
+      "ErrorCan not save without any selected cloumns",
+    );
+  } catch (error) {
+    console.error(
+      `Error During validating error message on save view without selecting columns`,
+    );
+  }
 
-  await page.locator('#NormalizedViewBreakStatusSelector #checkboxID').check();
-  await page.getByRole('button', { name: 'Save View' }).click();
-  await page.locator('#NormalizedViewChangeViewShuttle').getByText('Break Status').click();
-  await expect(page.locator('#NormalizedViewChangeViewShuttle')).toContainText('attribute-1Test DateBreak Status');
-  await page.getByRole('button', { name: 'Reset' }).click();
-  await expect(page.locator('#NormalizedViewChangeViewShuttle')).toContainText('attribute-1Test Date');
+  await page.locator("#NormalizedViewBreakStatusSelector #checkboxID").check();
+  await page.getByRole("button", { name: "Save View" }).click();
+  await page
+    .locator("#NormalizedViewChangeViewShuttle")
+    .getByText("Break Status")
+    .click();
+  await expect(page.locator("#NormalizedViewChangeViewShuttle")).toContainText(
+    "attribute-1Test DateBreak Status",
+  );
+  await page.getByRole("button", { name: "Reset" }).click();
+  await expect(page.locator("#NormalizedViewChangeViewShuttle")).toContainText(
+    "attribute-1Test Date",
+  );
   await page.getByText("date", { exact: true }).click();
   await page.getByText("Amount_Spread", { exact: true }).click();
   await page.getByText("Due Date").click();
@@ -182,17 +186,21 @@ test("nvSetupCash", async ({ page }) => {
   await page.getByText("LIBOR Floor", { exact: true }).click();
   await page.getByText("Amount_Spread-Difference").click();
   await page.getByText("Contract Amount-Difference").click();
-try{
-  await page.getByTestId('search_selectedItems_shuttle').click();
-  await page.getByTestId('search_selectedItems_shuttle').fill('Account ID');
+  try {
+    await page.getByTestId("search_selectedItems_shuttle").click();
+    await page.getByTestId("search_selectedItems_shuttle").fill("Account ID");
 
-  await expect(page.getByTestId('draggable_item')).toContainText('Account ID');
+    await expect(page.getByTestId("draggable_item")).toContainText(
+      "Account ID",
+    );
 
-  await page.getByTestId('search_selectedItems_shuttle').click();
-  await page.getByTestId('search_selectedItems_shuttle').fill('');
-}catch(error){
-    console.error(`Error During validating search functionality in change view shuttle`);
-}
+    await page.getByTestId("search_selectedItems_shuttle").click();
+    await page.getByTestId("search_selectedItems_shuttle").fill("");
+  } catch (error) {
+    console.error(
+      `Error During validating search functionality in change view shuttle`,
+    );
+  }
   await page
     .locator("#NormalizedViewOverlappedColumnsSelector #checkboxID")
     .uncheck();
@@ -202,18 +210,18 @@ try{
   await page.locator(overllapedAttributescheckbox("attribute-1")).uncheck();
   await page.locator(overllapedAttributescheckbox("Test Date")).uncheck();
   await page.getByRole("button", { name: "Save View" }).click();
-//   await expect(page.getByLabel("Error")).toContainText(
-//     "ErrorCan not save without any selected cloumns",
-//   );
+  //   await expect(page.getByLabel("Error")).toContainText(
+  //     "ErrorCan not save without any selected cloumns",
+  //   );
   await page.locator("#NormalizedViewBreakStatusSelector #checkboxID").check();
   await page.getByRole("button", { name: "Save View" }).click();
-  try{
-  await expect(page.getByLabel("Update Normalized View")).toContainText(
-    "Update Normalized ViewNormalized view Position_NV_Setup_Automation setup saved",
-  );
-}catch(error){
-  console.error(`Error During validating success message on update NV view`);
-}
+  try {
+    await expect(page.getByLabel("Update Normalized View")).toContainText(
+      "Update Normalized ViewNormalized view Position_NV_Setup_Automation setup saved",
+    );
+  } catch (error) {
+    console.error(`Error During validating success message on update NV view`);
+  }
 
   // Update Recon
   for (let i = 1; i <= 1; i++) {
@@ -226,24 +234,24 @@ try{
   //
   //validation on BM
   await openFromBreakManagement(page, "Cash_NV_Setup_Automation", "View");
-  try{
-  await page.getByRole("button", { name: "view :" }).click();
-  await expect(page.locator("#childContainerCheckRunStatus")).toContainText(
-    "Underlying Recons Cash_Recon_NV_1", //Cash_Recon_NV_2Cash_Recon_NV_3Cash_Recon_NV_4Cash_Recon_NV_5
-  );
-  await page.getByRole("button", { name: "Cash_Recon_NV_1" }).click();
-  await expect(page.locator("#RS_FirstRow")).toContainText(
-    "Recon : Cash_Recon_NV_1",
-  );
-  await page.getByTestId("runSatusClose").click();
-  await page.getByRole("button", { name: "Sign off" }).click();
-  await expect(page.locator("#root")).toContainText(
-    "Actions getting performed on following checked reconsCash_Recon_NV_1Already Signed Off", //Cash_Recon_NV_2Already Signed OffCash_Recon_NV_3Already Signed OffCash_Recon_NV_4Already Signed OffCash_Recon_NV_5Already Signed OffCancelSign offRevoke Signoff
-  );
-  await page.getByRole("button", { name: "Cancel" }).click();
-}catch(error){
-  console.error(`Error During validation of NV in BM`);
-}
+  try {
+    await page.getByRole("button", { name: "view :" }).click();
+    await expect(page.locator("#childContainerCheckRunStatus")).toContainText(
+      "Underlying Recons Cash_Recon_NV_1", //Cash_Recon_NV_2Cash_Recon_NV_3Cash_Recon_NV_4Cash_Recon_NV_5
+    );
+    await page.getByRole("button", { name: "Cash_Recon_NV_1" }).click();
+    await expect(page.locator("#RS_FirstRow")).toContainText(
+      "Recon : Cash_Recon_NV_1",
+    );
+    await page.getByTestId("runSatusClose").click();
+    await page.getByRole("button", { name: "Sign off" }).click();
+    await expect(page.locator("#root")).toContainText(
+      "Actions getting performed on following checked reconsCash_Recon_NV_1Already Signed Off", //Cash_Recon_NV_2Already Signed OffCash_Recon_NV_3Already Signed OffCash_Recon_NV_4Already Signed OffCash_Recon_NV_5Already Signed OffCancelSign offRevoke Signoff
+    );
+    await page.getByRole("button", { name: "Cancel" }).click();
+  } catch (error) {
+    console.error(`Error During validation of NV in BM`);
+  }
 
   //add attribute from view settings
   await page.getByTitle("Manage Recon Settings").click();
@@ -254,7 +262,7 @@ try{
   await page.getByRole("button", { name: "Break Status" }).click();
   await page.getByRole("button", { name: "Status" }).click();
   await page.getByTestId("generateViewSettings").click();
-//   await page.getByTestId("saveViewSettings").click();
+  //   await page.getByTestId("saveViewSettings").click();
 
   await page
     .getByRole("button", { name: "Clear Filters and Grouping" })
@@ -310,7 +318,7 @@ try{
   // await page.locator('[id="floatingFilter_Recon Name_adaptableId"]').getByText('Select...').click();
   try {
     await expect(page.locator("body")).toContainText(
-      "Cash_Recon_NV_1",  //Cash_Recon_NV_2 Cash_Recon_NV_3 Cash_Recon_NV_4 Cash_Recon_NV_5
+      "Cash_Recon_NV_1", //Cash_Recon_NV_2 Cash_Recon_NV_3 Cash_Recon_NV_4 Cash_Recon_NV_5
     );
   } catch (error) {
     console.error(`Error During validating recon name in filter`);

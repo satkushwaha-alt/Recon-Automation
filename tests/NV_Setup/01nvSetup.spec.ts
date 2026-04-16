@@ -204,7 +204,7 @@ test("nvSetupPosition", async ({ page }) => {
   await addNewAttributes(page, attributes);
 
   //change View
-
+  await page.waitForTimeout(10000);
   await page.getByRole("button", { name: "Change View" }).click();
   await page.waitForTimeout(3000);
 
